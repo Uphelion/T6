@@ -1,0 +1,24 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# Replace the URL with the appropriate source for the Premier League results
+url = "https://www.flashscore.co.uk/football/england/premier-league/results/"
+
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+big_six = ["Arsenal", "Chelsea", "Liverpool", "Manchester United", "Manchester City", "Tottenham Hotspur"]
+results = []
+
+for game in soup.find_all("div", class_="game-result"):
+    home_team = game.find("div", class_="event__participant event__participant--home").text.strip()
+    away_team = game.find("div", class_="event__participant event__participant--away").text.strip()
+    home_score = game.find("div", class_="event__score event__score--home").text.strip()
+    away_score = game.find("div", class_="event__score event__score--away").text.strip()
+
+    if home_team in big_six and away_team in big_six:
+        home_goals, away_goals = int(score[0]), int(score[1])
+        results.append((home_team, away_team, home_goals, away_goals))
+
+print(results)
